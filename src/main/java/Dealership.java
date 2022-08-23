@@ -3,33 +3,34 @@ import java.util.List;
 
 public class Dealership {
 
-    static Manufacturer manufacturer;
-    static List<Car> carList = new ArrayList<>();
+    private final static int BUY_TIME = 1000;
+    private final static int PRODUCE_TIME = 2000;
+    final List<Car> cars = new ArrayList<>();
 
-    public Dealership(Manufacturer manufacturer) {
-
-        this.manufacturer = manufacturer;
+    public synchronized void buyCar() {
+        try {
+            System.out.println(Thread.currentThread().getName() + " зашел в автосалон");
+            while (cars.size() == 0) {
+                System.out.println("Машин нет!");
+                wait();
+            }
+            Thread.sleep(BUY_TIME);
+            System.out.println(Thread.currentThread().getName() + " уехал на новеньком авто");
+            cars.remove(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public void makeCar() {
-
-        System.out.println("Машина получена от производителя и доставлена в дилерский центр");
-        carList.add(this.manufacturer.getCar());
-
-    }
-
-    public void buyCar() {
-        if (carList.isEmpty()) {
-            System.out.println("Машин в автосалоне нет.");
-        } else {
-            System.out.println("Продана первая понравившаяся машина c номером " + carList.get(0).number);
-            carList.remove(0);
+    public synchronized void produceCar() {
+        try {
+            Thread.sleep(PRODUCE_TIME);
+            cars.add(new Car());
+            System.out.println(Thread.currentThread().getName() + " выпустил 1 авто");
+            notify();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
-
-    public boolean empty() {
-        return carList.isEmpty();
-    }
-
 }

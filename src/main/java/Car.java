@@ -1,10 +1,7 @@
 public class Car {
-    int number;
+    private final static int NUMBER_CARS = 10;
 
-    public Car(int number) {
-
-        this.number = number;
-
+    public static int getNumberCars() {
+        return NUMBER_CARS;
     }
-
 }
